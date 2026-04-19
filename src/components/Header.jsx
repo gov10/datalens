@@ -14,7 +14,7 @@ function Header(){
             </div>
             {/* Tagline */}
             <div style={{
-                fontSize:13, color:'#B5D4F4'
+                fontSize:20, color:'#B5D4F4'
             }}>Small Business Data analyst</div>
         </header>
     )

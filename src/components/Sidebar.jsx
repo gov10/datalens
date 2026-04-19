@@ -1,5 +1,5 @@
 function Sidebar(activePage,setActivePage){
-    const navItems = ['Dashbaord','Uploads', 'Reports']
+    const navItems = ['Dashboard','Uploads', 'Reports','payment']
 
     return (
         <aside style={{
