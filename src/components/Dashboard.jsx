@@ -18,21 +18,22 @@ function Dashboard(){
             header:true,
             skipEmptyLines:true,
             complete:(result) =>{
+                //console.log('Parsed rows:',result.data)
                 setCsvData(result.data)
-                setLoading(false)
+                setParsed(true)
             },
             error:()=>{
                 setError('Could not read file. Please try again.')
-                setLoading(false)
+               
             }
         })
-    })
+    },[file])
     return (
         <main style ={{flex:1, padding: 24}}> 
 
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:24}}>
                 <h1 style={{fontsize:20,fontWeight:600,color:'#1a1a2e'}}>Dashboard</h1>
-                <button  onClick={() => document.getElementById('csvInput').click() }style={{
+                <button  onClick={() => document.getElementById('csvInput').click() } style={{
                     background:'#0C447C',
                     color:'#fff',
                     border:'none',
@@ -78,14 +79,14 @@ function Dashboard(){
                     color:'#A32D2D'
                 }}>X {error}</div>
             )}
-            {/* Loading state */}
+            {/* Loading state
             {loading &&(
                 <div style={{textAlign:'center',padding:40, color:'#94a3b8'}}>Reading your file...</div>
-            )}
+            )} */}
 
             {/* Empty state — only show if no file selected */}
 
-            {!file && !loading && (
+            {!file &&(
                 <div style={{
                     border: '2px dashed #cbd5e1',
                     borderRadius:12,
@@ -102,6 +103,7 @@ function Dashboard(){
                 </div>
             )}
             {/* Data Table - only shows after parsing*/ }
+            {parsed && csvData.length>0 &&(
             <div style={{overflowX:'auto'}}>
                 <table style={{
                     width:'100%',
@@ -140,7 +142,7 @@ function Dashboard(){
                 </table>
             </div>
 
-           
+         )}
                
 
 
