@@ -1,5 +1,6 @@
 import {useState,useEffect} from 'react';
 import Papa from 'papaparse'
+import Charts from './Charts'
 
 //Data Cleaning layer
 const wordToNumber = {
@@ -156,7 +157,7 @@ function Dashboard(){
     const [error,setError] = useState('')
     const [parsed, setParsed] = useState(false)
     const [removed, setRemoved] = useState(0)
-const [imputed, setImputed] = useState(0)
+    const [imputed, setImputed] = useState(0)
 
     // useEffect watches file — runs when file changes
     useEffect(()=>{
@@ -294,8 +295,12 @@ const [imputed, setImputed] = useState(0)
                     </tbody>
                 </table>
             </div>
-
+            
          )}
+         {parsed && csvData.length > 0 && (
+                <Charts csvData={csvData} />
+            )}
+
                
 
 
