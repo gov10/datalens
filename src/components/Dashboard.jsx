@@ -1,6 +1,8 @@
 import {useState,useEffect} from 'react';
 import Papa from 'papaparse'
 import Charts from './Charts'
+import MetricCards from './MetricCards';
+import CollapsableTable from './CollapsableTable';
 
 //Data Cleaning layer
 const wordToNumber = {
@@ -29,7 +31,7 @@ function parsedSmartNumber(value){
     if (!isNaN(direct) && cleaned!=='') return direct
 
      // remove commas — "2,800" → 2800
-    const noCommas = cleaned.replace(/./g,'') 
+    const noCommas = cleaned.replace(/,/g,'') 
     if(!isNaN(Number(noCommas)) && noCommas !=='') return Number(noCommas)
 
      // handle "2.8k" or "2.8K" → 2800
@@ -71,23 +73,76 @@ function parsedSmartNumber(value){
 }
 
 const monthMap = {
-  'jan': 'Jan', 'january': 'Jan',
-  'feb': 'Feb', 'february': 'Feb',
-  'mar': 'Mar', 'march': 'Mar',
-  'apr': 'Apr', 'april': 'Apr',
-  'may': 'May', 'may': 'May',
-  'jun': 'Jun', 'june': 'Jun',
-  'jul': 'Jul', 'july': 'Jul',
-  'aug': 'Aug', 'august': 'Aug',
-  'sep': 'Sep', 'september': 'Sep',
-  'oct': 'Oct', 'october': 'Oct',
-  'nov': 'Nov', 'november': 'Nov',
-  'dec': 'Dec', 'december': 'Dec',
+ // January
+  'jan': 'Jan', 'jan.': 'Jan', 'january': 'Jan', 'janvier': 'Jan',
+
+  // February
+  'feb': 'Feb', 'feb.': 'Feb', 'febr': 'Feb', 'february': 'Feb',
+
+  // March
+  'mar': 'Mar', 'mar.': 'Mar', 'march': 'Mar', 'marc': 'Mar',
+
+  // April
+  'apr': 'Apr', 'apr.': 'Apr', 'april': 'Apr', 'aprl': 'Apr',
+
+  // May
+  'may': 'May', 'may.': 'May',
+
+  // June
+  'jun': 'Jun', 'jun.': 'Jun', 'june': 'Jun',
+
+  // July
+  'jul': 'Jul', 'jul.': 'Jul', 'july': 'Jul', 'jly': 'Jul',
+
+  // August
+  'aug': 'Aug', 'aug.': 'Aug', 'august': 'Aug', 'agust': 'Aug',
+
+  // September
+  'sep': 'Sep', 'sep.': 'Sep', 'sept': 'Sep', 'sept.': 'Sep',
+  'september': 'Sep', 'setember': 'Sep',
+
+  // October
+  'oct': 'Oct', 'oct.': 'Oct', 'october': 'Oct', 'octo': 'Oct',
+
+  // November
+  'nov': 'Nov', 'nov.': 'Nov', 'november': 'Nov', 'novem': 'Nov',
+
+  // December
+  'dec': 'Dec', 'dec.': 'Dec', 'december': 'Dec', 'decem': 'Dec',
+
+  // Numbers — some systems export month as number
+  '1': 'Jan', '01': 'Jan',
+  '2': 'Feb', '02': 'Feb',
+  '3': 'Mar', '03': 'Mar',
+  '4': 'Apr', '04': 'Apr',
+  '5': 'May', '05': 'May',
+  '6': 'Jun', '06': 'Jun',
+  '7': 'Jul', '07': 'Jul',
+  '8': 'Aug', '08': 'Aug',
+  '9': 'Sep', '09': 'Sep',
+  '10': 'Oct',
+  '11': 'Nov',
+  '12': 'Dec',
 }
+
 function normaliseMonth(value){
-    if (!value) return null
-    const key = value.toString().toLowerCase().trim()
-    return monthMap[key] || value.trim()
+    if (!value) return null;
+    const str = value.toString().toLowerCase().trim()
+
+  // handle formats like "2022-01" or "01-2022" — extract month number
+  const dashMatch = str.match(/^(\d{4})-(\d{1,2})$/)
+  if (dashMatch) return monthMap[dashMatch[2]] || str
+
+  const slashMatch = str.match(/^(\d{1,2})\/(\d{4})$/)
+  if (slashMatch) return monthMap[slashMatch[1]] || str
+
+  // handle "Jan 2022" or "January 2022" — extract just month name
+  const spaceMatch = str.match(/^([a-z]+)\s+\d{4}$/)
+  if (spaceMatch) return monthMap[spaceMatch[1]] || str
+
+  // standard lookup
+  return monthMap[str] || value.trim()
+
 }
 
 //text cleaner
@@ -103,9 +158,9 @@ function getMedian(numbers){
     if (!valid.length) return 0
     const sorted = [...valid].sort((a,b)=>a-b)
     const mid = Math.floor(sorted.length/2)
-    return sorted.length52 !==0
+    return sorted.length%2 !==0
     ? sorted[mid]
-    :Math.round((sorted[mid-1]+sorted[mid]/2))
+    :Math.round((sorted[mid-1]+sorted[mid])/2)
 }
 //main cleaning function
 function cleanData(rows){
@@ -113,7 +168,9 @@ function cleanData(rows){
     ...row,
     month:normaliseMonth(row.month),
     item:cleanText(row.item),
-    category: cleanText(row.category,'Uncategorised'),
+    category: cleanText(row.category,'Uncategorised')
+    .toLowerCase()
+    .replace(/\b\w/g, c => c.toUpperCase()),
     revenue: parsedSmartNumber(row.revenue),
     orders: parsedSmartNumber(row.orders)
 
@@ -183,10 +240,10 @@ function Dashboard(){
         })
     },[file])
     return (
-        <main style ={{flex:1, padding: 24}}> 
+        <main style ={{flex:1,minWidth: 0, padding: 24}}> 
 
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:24}}>
-                <h1 style={{fontsize:20,fontWeight:600,color:'#1a1a2e'}}>Dashboard</h1>
+                <h1 style={{fontSize:20,fontWeight:600,color:'#1a1a2e'}}>Dashboard</h1>
                 <button  onClick={() => document.getElementById('csvInput').click() } style={{
                     background:'#0C447C',
                     color:'#fff',
@@ -220,6 +277,28 @@ function Dashboard(){
                 }}>Selected: {file.name}</div>
             )}
 
+            {parsed && (removed >0 || imputed>0) && (
+                <div style={{
+                    background:'#FAEEDA',
+                    border:'1px solid #FAC775',
+                    borderRadius:8,
+                    padding:'10px 14px',
+                    marginBottom:20,
+                    fontSize:13,
+                    color:'#854F0B'
+
+                }}>
+                    {removed>0 && `${removed} rows removed.`}
+                    {imputed > 0 && `${imputed} values filled with median values`}
+                </div>
+            )}
+
+            {/* Metric card */}
+            {parsed && csvData.length>0 && (
+                <MetricCards csvData={csvData} />
+            )}
+        
+
             {/* Error Message */}
 
             {error &&(
@@ -233,12 +312,7 @@ function Dashboard(){
                     color:'#A32D2D'
                 }}>X {error}</div>
             )}
-            {/* Loading state
-            {loading &&(
-                <div style={{textAlign:'center',padding:40, color:'#94a3b8'}}>Reading your file...</div>
-            )} */}
-
-            {/* Empty state — only show if no file selected */}
+           
 
             {!file &&(
                 <div style={{
@@ -256,52 +330,17 @@ function Dashboard(){
                     </div>
                 </div>
             )}
-            {/* Data Table - only shows after parsing*/ }
-            {parsed && csvData.length>0 &&(
-            <div style={{overflowX:'auto'}}>
-                <table style={{
-                    width:'100%',
-                    borderCollapse:'collapse',
-                    fontSize: 13
-                }}>
-                    {/* Table headers — from CSV column names */}
-                    <thead>
-                        <tr style={{background:'0C447C'}}>
-                            {Object.keys(csvData[0]).map((col)=>(
-                                <th key={col} style={{
-                                    padding:'10px 14px',
-                                    
-                                    textAlign:'left',
-                                    fontWeight:500
-
-                                }}>{col}</th>
-
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {csvData.map((row,index)=>(
-                            <tr key={index} style={{
-                                background:index % 2===0 ? '#fff': '#f8fafc',
-                                birderBottom:'1px solid #e2e8f0'
-                            }}>
-                                {Object.values(row).map((val,i)=>(
-                                    <td key={i} style={{padding:'10px 14px'}}>
-                                        {val}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
             
-         )}
+           {parsed && csvData.length > 0 && (
+            <CollapsableTable csvData={csvData} />
+)} 
+           
+            
+         
          {parsed && csvData.length > 0 && (
                 <Charts csvData={csvData} />
             )}
 
-               
 
 
             

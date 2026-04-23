@@ -10,7 +10,7 @@ function App(){
       <Header />
 
       {/* Body — sidebar + main content side by side */}
-      <div style={{display:'flex'}}>
+      <div style={{display:'flex', width: '100%', overflow: 'hidden'}}>
         <Sidebar
         activePage = {activePage}
         setActivePage ={setActivePage} 
