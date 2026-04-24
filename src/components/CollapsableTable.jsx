@@ -4,11 +4,27 @@ export default function CollapsableTable ({csvData}){
     const [isOpen, setIsOpen] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const rowPerPage = 20
-    const totalPages = Math.ceil(csvData.length/rowPerPage)
+     const [search,setSearch] = useState('')
 
-    const visibleRows = csvData.slice(
+    const filtered = search ? csvData.filter((row)=>
+                        Object.values(row).some((val)=>
+                        val.toString().toLowerCase().includes(search.toLowerCase())
+                    )
+                ) :csvData
+
+    const totalPages = Math.ceil(csvData.length/rowPerPage)
+    
+
+    const visibleRows = filtered.slice(
         (currentPage-1)*rowPerPage, currentPage*rowPerPage
     )
+
+    
+
+    // const totalPages = Math.ceil(filtered.length/rowPerPage)
+    // const visibleRows = filtered.slice(
+    //     (currentPage-1)*rowPerPage,currentPage*rowPerPage
+    // )
 
     return (
         <div style={{marginBottom:24}}>
@@ -40,6 +56,27 @@ export default function CollapsableTable ({csvData}){
            {/* Table only when open */}    
            {isOpen &&(
             <div>
+                {isOpen && (
+                    <div>
+                        <input 
+                        type="text"
+                        placeholder="Search any column"
+                        value={search}
+                        onChange={(e)=>{
+                            setSearch(e.target.value)
+                            setCurrentPage(1)
+                        }}
+                        style={{
+                            width:'100%',
+                            padding:'8px 12px',
+                            fontSize:13,
+                            borderRadius:8,
+                            border:'1px solid #e2e8f0',
+                            marginBottom:10,
+                            outline:'none'
+                        }} />
+                    </div>
+                )}
                 {/**Pagination info */}
 
                 <div style={{
@@ -58,7 +95,7 @@ export default function CollapsableTable ({csvData}){
                         onClick={()=>setCurrentPage (p=>Math.max(1,p-1))}
                         disabled={currentPage===1}
                         style={{
-                            padding:'4pz 12px',
+                            padding:'4px 12px',
                             borderRadius:6,
                             border:'1px solid #e2e8f0',
                             cursor:currentPage ===1 ? 'not-allowed':'pointer',
