@@ -8,3 +8,13 @@ body{
     background: #f4f6f9;
     color: #1a1a2e;
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    padding: 12px !important;
+  }
+}

@@ -3,6 +3,7 @@ import Papa from 'papaparse'
 import Charts from './Charts'
 import MetricCards from './MetricCards';
 import CollapsableTable from './CollapsableTable';
+import AutoInsights from './AutoInsights';
 
 //Data Cleaning layer
 const wordToNumber = {
@@ -31,7 +32,7 @@ function parsedSmartNumber(value){
     if (!isNaN(direct) && cleaned!=='') return direct
 
      // remove commas — "2,800" → 2800
-    const noCommas = cleaned.replace(/,/g,'') 
+    const noCommas = cleaned.replace(/,/g, '') 
     if(!isNaN(Number(noCommas)) && noCommas !=='') return Number(noCommas)
 
      // handle "2.8k" or "2.8K" → 2800
@@ -297,6 +298,7 @@ function Dashboard(){
             {parsed && csvData.length>0 && (
                 <MetricCards csvData={csvData} />
             )}
+           
         
 
             {/* Error Message */}
@@ -333,7 +335,12 @@ function Dashboard(){
             
            {parsed && csvData.length > 0 && (
             <CollapsableTable csvData={csvData} />
-)} 
+            )} 
+
+             {/**auto insights */}
+            {parsed && csvData.length > 0 && (
+            <AutoInsights csvData={csvData} />
+            )}
            
             
          
