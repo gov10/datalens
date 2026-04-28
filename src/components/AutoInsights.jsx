@@ -184,7 +184,7 @@
                     <h2 style={{
                         fontSize:15,
                         fontWeight:600,
-                        color:'#1a1a2e',
+                        color:'#7C2D12',
                         marginBottom:16
                     }}>
                         Auto Insights
@@ -192,7 +192,9 @@
                     <div style={{
                         display:'flex',
                         flexDirection:'column',
-                        gap:10
+                        gap:10,
+                        flex: 1,                        
+                        justifyContent: 'space-between'
                     }}>
                         {insights.map((insight,i)=>(
                             <div key={i} style={{

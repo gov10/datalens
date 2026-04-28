@@ -1,7 +1,7 @@
 function Header(){
     return (
         <header style={{
-            background:'#0C447C',
+            background:'#7C2D12',
             padding: '14px 24px',
             display:'flex',
             alignItems:'center',
@@ -10,11 +10,11 @@ function Header(){
             <div style={{
                 fontSize:20,fontWeight:600, color: '#fff'  
             }}>
-                Data<span style={{color:'#B5D4F4'}}>Lens </span>
+                Data<span style={{color:'#EA580C'}}>Lens </span>
             </div>
             {/* Tagline */}
             <div style={{
-                fontSize:20, color:'#B5D4F4'
+                fontSize:20, color:'#FDBA74'
             }}>Small Business Data analyst</div>
         </header>
     )

@@ -241,15 +241,15 @@ function Dashboard(){
         })
     },[file])
     return (
-        <main style ={{flex:1,minWidth: 0, padding: 24}}> 
+        <main style ={{flex:1,background: '#FFF7ED',minWidth: 0, padding: 24}}> 
 
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:24}}>
-                <h1 style={{fontSize:20,fontWeight:600,color:'#1a1a2e'}}>Dashboard</h1>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:20}}>
+                <h1 style={{fontSize:20,fontWeight:600,color:'#7C2D12'}}>Dashboard</h1>
                 <button  onClick={() => document.getElementById('csvInput').click() } style={{
-                    background:'#0C447C',
+                    background:'#EA580C',
                     color:'#fff',
                     border:'none',
-                    padding:'8px 16px',
+                    padding:'8px 20px',
                     borderRadius:8,
                     fontSize: 13,
                     cursor:'pointer'
@@ -268,25 +268,25 @@ function Dashboard(){
             {/* File Selection confirmation */}
             {file && (
                 <div style = {{
-                    background: '#E1F5EE',
-                    border:'1px solid #9FE1CB',
+                    background: '#FFEDD5',
+                    border:'1px solid #FDBA74',
                     borderRadius:8,
                     padding:'10px 14px',
                     marginBottom:20,
                     fontSize:13,
-                    color:'#085041'
+                    color:'#7C2D12'
                 }}>Selected: {file.name}</div>
             )}
 
             {parsed && (removed >0 || imputed>0) && (
                 <div style={{
-                    background:'#FAEEDA',
-                    border:'1px solid #FAC775',
+                    background:'#FEF3C7',
+                    border:'1px solid #FDE68A',
                     borderRadius:8,
                     padding:'10px 14px',
                     marginBottom:20,
                     fontSize:13,
-                    color:'#854F0B'
+                    color:'#78350F'
 
                 }}>
                     {removed>0 && `${removed} rows removed.`}
@@ -294,10 +294,7 @@ function Dashboard(){
                 </div>
             )}
 
-            {/* Metric card */}
-            {parsed && csvData.length>0 && (
-                <MetricCards csvData={csvData} />
-            )}
+           
            
         
 
@@ -305,52 +302,171 @@ function Dashboard(){
 
             {error &&(
                 <div style={{
-                    background:'#FCEBEB',
-                    border: '1px solid #F7C1C1',
+                    background:'#FEE2E2',
+                    border: '1px solid #FECACA',
                     borderRadius:8,
                     padding:'10px 14px',
-                    marginBottom:20,
+                   
                     fontSize:13,
-                    color:'#A32D2D'
+                    color:'#991B1B'
                 }}>X {error}</div>
             )}
            
-
+            {/**empty state */}
             {!file &&(
                 <div style={{
-                    border: '2px dashed #cbd5e1',
+                    border: '2px dashed #FDBA74',
                     borderRadius:12,
                     padding:'60px 20px',
                     textAlign:'center'
                 }}>
                     <div style={{fontSize:40,marginBottom:12}}>📊</div>
-                    <div style={{fontSize:16,fontWeight:500,marginBottom:6}}>
+                    <div style={{fontSize:16,fontWeight:600,color: '#7C2D12',marginBottom:6}}>
                     No data yet
                     </div>
-                    <div style= {{fontSize:13, color:'#94a3b8'}}>
+                    <div style= {{fontSize:13, color:'#92400E'}}>
                     Upload a Csv file to see  your dashboard
                     </div>
                 </div>
             )}
-            
-           {parsed && csvData.length > 0 && (
-            <CollapsableTable csvData={csvData} />
-            )} 
-
-             {/**auto insights */}
+             {/* Metric card */}
+            {parsed && csvData.length>0 && (
+                <MetricCards csvData={csvData} />
+            )}
+            {/* Two column layout — insights left, charts right */}
             {parsed && csvData.length > 0 && (
-            <AutoInsights csvData={csvData} />
-            )}
-           
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1.8fr',
+                gap: 16,
+                marginBottom: 16,
+                alignItems: 'stretch'
+            }}>
+
+                {/* Left — Auto Insights */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* Auto Insights */}
+            <div style={{
+                background: '#fff',
+                borderRadius: 12,
+                padding: 20,
+                border: '1px solid #FDBA74',
+            }}>
+                <AutoInsights csvData={csvData} />
+            </div>
+
+            {/* Top Items by Revenue */}
+            <div style={{
+                background: '#fff',
+                borderRadius: 12,
+                padding: 20,
+                border: '1px solid #FDBA74',
+                flex: 1
+            }}>
+                <h2 style={{
+                fontSize: 15,
+                fontWeight: 600,
+                color: '#7C2D12',
+                marginBottom: 16
+                }}>
+                🏆 Top Items by Revenue
+                </h2>
+                {Object.entries(
+                csvData.reduce((acc, row) => {
+                    if (!acc[row.item]) acc[row.item] = 0
+                    acc[row.item] += Number(row.revenue) || 0
+                    return acc
+                }, {})
+                )
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([item, revenue], i) => {
+                    const max = Math.max(...Object.values(
+                    csvData.reduce((acc, row) => {
+                        if (!acc[row.item]) acc[row.item] = 0
+                        acc[row.item] += Number(row.revenue) || 0
+                        return acc
+                    }, {})
+                    ))
+                    const pct = Math.round((revenue / max) * 100)
+                    const colors = ['#EA580C','#FB923C','#FCD34D','#FDBA74','#FED7AA']
+                    return (
+                    <div key={item} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        marginBottom: 12
+                    }}>
+                        <div style={{
+                        width: 24, height: 24,
+                        borderRadius: '50%',
+                        background: colors[i],
+                        color: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        flexShrink: 0
+                        }}>
+                        {i + 1}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: 4
+                        }}>
+                            <span style={{ fontSize: 13, fontWeight: 500, color: '#7C2D12' }}>
+                            {item}
+                            </span>
+                            <span style={{ fontSize: 12, color: '#92400E' }}>
+                            ${revenue.toLocaleString()}
+                            </span>
+                        </div>
+                        <div style={{
+                            background: '#FFF7ED',
+                            borderRadius: 4,
+                            height: 6,
+                            overflow: 'hidden'
+                        }}>
+                            <div style={{
+                            width: `${pct}%`,
+                            height: '100%',
+                            background: colors[i],
+                            borderRadius: 4
+                            }} />
+                        </div>
+                        </div>
+                    </div>
+                    )
+                })}
+            </div>
+
+            </div>
+
+                            
+                            
+                            
+
+                            {/* Right — Charts */}
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 16
+                                }}>
             
-         
-         {parsed && csvData.length > 0 && (
-                <Charts csvData={csvData} />
-            )}
+                            <Charts csvData={csvData} />
+                            </div>
 
-
+                        </div>
+                        )}
 
             
+          {parsed && csvData.length > 0 && (
+            <CollapsableTable csvData={csvData} />
+            )}   
         </main>
 
     )

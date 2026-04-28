@@ -39,43 +39,43 @@ export default function MetricCards({csvData}){
             label: 'Total Revenue',
             value: `$${totalRevenue.toLocaleString()}`,
             icon: '💰',
-            bg: '#E6F1FB',
-            color: '#0C447C'
+            bg: '#FFEDD5',
+            color: '#7C2D12'
             },
             {
             label: 'Total Orders',
             value: totalOrders.toLocaleString(),
             icon: '🛒',
-            bg: '#E1F5EE',
-            color: '#085041'
+            bg: '#FEF3C7',
+            color: '#78350F'
             },
             {
             label: 'Avg Order Value',
             value: `$${avgOrder}`,
             icon: '📊',
-            bg: '#FAEEDA',
-            color: '#633806'
+            bg: '#FEE2E2',
+            color: '#991B1B'
             },
             {
             label: 'Best Month',
             value: bestMonth,
             icon: '🏆',
-            bg: '#EEEDFE',
-            color: '#3C3489'
+            bg: '#FFEDD5',
+            color: '#7C2D12'
             },
             {
             label: 'Top Item',
             value: topItem,
             icon: '⭐',
-            bg: '#E1F5EE',
-            color: '#085041'
+            bg: '#FEF9C3',
+            color: '#713F12'
             },
             {
             label: 'Worst Month',
             value: worstMonth,
             icon: '📉',
-            bg: '#FCEBEB',
-            color: '#A32D2D'
+            bg: '#FEE2E2',
+            color: '#991B1B'
             },
 
     ]
@@ -96,7 +96,7 @@ export default function MetricCards({csvData}){
                     overflow:'hidden'
 
                     }}>
-                        <div style={{ fontSize:20,marginBottom:8}}>
+                        <div style={{ fontSize:20}}>
                             {card.icon}
                         </div>
                         <div style={{

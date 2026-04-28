@@ -129,7 +129,7 @@ export default function CollapsableTable ({csvData}){
                         fontSize:13
                     }}>
                         <thead>
-                            <tr style = {{background:'#0C447C'}}>
+                            <tr style = {{background:'#7C2D12'}}>
                                 {Object.keys(csvData[0]).map((col)=>(
                                     <th key={col} style={{
                                         padding:'10px 14px',
