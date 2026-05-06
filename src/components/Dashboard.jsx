@@ -226,13 +226,38 @@ function Dashboard(){
         Papa.parse(file,{
             header:true,
             skipEmptyLines:true,
-            complete:(result) =>{
+            complete:async(result) =>{
                 //console.log('Parsed rows:',result.data)
                 const {data,removedCount,imputedCount} = cleanData(result.data)
                 setCsvData(data)
                 setRemoved(removedCount)
                 setImputed(imputedCount)
-      setParsed(true)
+                setParsed(true)
+
+                try{
+                    console.log('Sending to backend:', {
+                        filename: file.name,
+                        totalRows: data.length,
+                        columns: Object.keys(data[0] || {}),
+                        firstRow: data[0]
+                        })
+                        const response = await fetch('http://localhost:3001/save',{
+                        method:'POST',
+                        headers:{
+                            'Content-Type':'application/json'
+                        },
+                        body:JSON.stringify({
+                            filename:file.name,
+                            totalRows: data.length,
+                            columns:Object.keys(data[0]||{}),
+                            data:data
+                        })
+                    })
+                    const result = await response.json()
+                    console.log('Saved to backend:',result.message)
+                }catch(err){
+                    console.error('Failed to save to backend:',err.message)
+                }
             },
             error:()=>{
                 setError('Could not read file. Please try again.')
