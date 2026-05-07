@@ -211,11 +211,47 @@ return {
 function Dashboard(){
     const [file,setFile] = useState(null);
     const[csvData,setCsvData] = useState([])
-    //const [loading,setLoading] = useState(false)
+    const [loading,setLoading] = useState(true)
     const [error,setError] = useState('')
     const [parsed, setParsed] = useState(false)
     const [removed, setRemoved] = useState(0)
     const [imputed, setImputed] = useState(0)
+
+    useEffect(()=>{
+        fetch('http://localhost:3001/data')
+        .then(res =>res.json())
+        .then(result=>{
+            try{
+                //console.log('MongoDB response:', JSON.stringify(result))//debugger
+                const uploads = result.uploads
+                if(!uploads){
+                    //console.log('No uploads field in respons')
+                    setLoading(false)
+                    return
+                }
+                if(uploads.length===0){
+                   //console.log('Uploads array is empty')
+                    setLoading(false)
+                    return
+                }
+                const latest = result.uploads[0]
+               // console.log('Latest upload:', latest.filename, latest.totalRows)//debugger
+
+                setCsvData(latest.data)
+                setParsed(true)
+                setLoading(false)
+               
+
+            }catch(err){
+                console.log('Error inside then:',err.message)
+                setLoading(false)
+            }
+        })
+        .catch(err=>{
+            //console.log('network error',err.message)
+            setLoading(false)
+        })
+    },[])
 
     // useEffect watches file — runs when file changes
     useEffect(()=>{
@@ -235,12 +271,12 @@ function Dashboard(){
                 setParsed(true)
 
                 try{
-                    console.log('Sending to backend:', {
-                        filename: file.name,
-                        totalRows: data.length,
-                        columns: Object.keys(data[0] || {}),
-                        firstRow: data[0]
-                        })
+                    // console.log('Sending to backend:', {
+                    //     filename: file.name,
+                    //     totalRows: data.length,
+                    //     columns: Object.keys(data[0] || {}),
+                    //     firstRow: data[0]
+                    //     })
                         const response = await fetch('http://localhost:3001/save',{
                         method:'POST',
                         headers:{
@@ -254,7 +290,7 @@ function Dashboard(){
                         })
                     })
                     const result = await response.json()
-                    console.log('Saved to backend:',result.message)
+                    //console.log('Saved to backend:',result.message)
                 }catch(err){
                     console.error('Failed to save to backend:',err.message)
                 }
@@ -287,7 +323,15 @@ function Dashboard(){
             type = "file"
             accept=".csv"
             style={{display:'none'}}
-            onChange={(e) => setFile(e.target.files[0])}
+            onChange={(e) => {
+                setFile(e.target.files[0])
+                setParsed(false)
+                setCsvData([])
+                setError('')
+                setRemoved(0)
+                setImputed(0)
+
+            }}
             />
 
             {/* File Selection confirmation */}
@@ -336,16 +380,40 @@ function Dashboard(){
                     color:'#991B1B'
                 }}>X {error}</div>
             )}
+
+            {/**loading state */}
+
+            {loading &&(
+                <div style={{
+                    border: '2px dashed #FDBA74',
+                    borderRadius: 12,
+                    padding: '60px 20px',
+                    textAlign: 'center',
+                    background: '#fff'
+                }}>
+                    <div style={{fontSize:40,marginBottom:12}}>⏳</div>
+                    <div style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: '#7C2D12',
+                        marginBottom: 6
+                    }}
+                    >Loading your data
+                    </div>
+                </div>
+            )}
+            
            
-            {/**empty state */}
-            {!file &&(
+            {/**empty state- only shows if not loading and no file*/}
+            {!loading && !file && !parsed&&(
                 <div style={{
                     border: '2px dashed #FDBA74',
                     borderRadius:12,
                     padding:'60px 20px',
-                    textAlign:'center'
+                    textAlign:'center',
+                    background:'#fff'
                 }}>
-                    <div style={{fontSize:40,marginBottom:12}}>📊</div>
+                    <div style={{fontSize:40,marginBottom:12}}>🍽️</div>
                     <div style={{fontSize:16,fontWeight:600,color: '#7C2D12',marginBottom:6}}>
                     No data yet
                     </div>
