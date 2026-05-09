@@ -4,6 +4,7 @@ import Charts from './Charts'
 import MetricCards from './MetricCards';
 import CollapsableTable from './CollapsableTable';
 import AutoInsights from './AutoInsights';
+import ColumnMapper from './ColumnMapper';
 
 //Data Cleaning layer
 const wordToNumber = {
@@ -111,7 +112,7 @@ const monthMap = {
   // December
   'dec': 'Dec', 'dec.': 'Dec', 'december': 'Dec', 'decem': 'Dec',
 
-  // Numbers — some systems export month as number
+  // Numbers some systems export month as number
   '1': 'Jan', '01': 'Jan',
   '2': 'Feb', '02': 'Feb',
   '3': 'Mar', '03': 'Mar',
@@ -130,21 +131,34 @@ function normaliseMonth(value){
     if (!value) return null;
     const str = value.toString().toLowerCase().trim()
 
-  // handle formats like "2022-01" or "01-2022" — extract month number
-  const dashMatch = str.match(/^(\d{4})-(\d{1,2})$/)
-  if (dashMatch) return monthMap[dashMatch[2]] || str
+    const timestamp = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
+    if (timestamp) return monthMap[timestamp[2]] || str
 
-  const slashMatch = str.match(/^(\d{1,2})\/(\d{4})$/)
-  if (slashMatch) return monthMap[slashMatch[1]] || str
+     //handle DD-MM-YYYY format like "07-03-2022"
+    const ddmmyyyy = str.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/)
+    if (ddmmyyyy) return monthMap[ddmmyyyy[2]] || str
 
-  // handle "Jan 2022" or "January 2022" — extract just month name
-  const spaceMatch = str.match(/^([a-z]+)\s+\d{4}$/)
-  if (spaceMatch) return monthMap[spaceMatch[1]] || str
+    //  handle MM/DD/YYYY format like "03/07/2022"
+    const mmddyyyy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+    if (mmddyyyy) return monthMap[mmddyyyy[1]] || str
 
-  // standard lookup
-  return monthMap[str] || value.trim()
+    // handle formats like "2022-01" or "01-2022" extract month number
+    const dashMatch = str.match(/^(\d{4})-(\d{1,2})$/)
+    if (dashMatch) return monthMap[dashMatch[2]] || str
+
+    const slashMatch = str.match(/^(\d{1,2})\/(\d{4})$/)
+    if (slashMatch) return monthMap[slashMatch[1]] || str
+
+    // handle "Jan 2022" or "January 2022" extract just month name
+    const spaceMatch = str.match(/^([a-z]+)\s+\d{4}$/)
+    if (spaceMatch) return monthMap[spaceMatch[1]] || str
+
+    // standard lookup
+    return monthMap[str] || value.trim()
 
 }
+
+
 
 //text cleaner
 function cleanText(value,fallback = ''){
@@ -163,6 +177,26 @@ function getMedian(numbers){
     ? sorted[mid]
     :Math.round((sorted[mid-1]+sorted[mid])/2)
 }
+
+function aggregateByMonth(rows){
+    const grouped = {}
+    rows.forEach(row=>{
+        const key = `${row.month}__${row.item}`
+        if (!grouped[key]){
+            grouped[key]={
+                month:row.month,
+                item:row.item,
+                category:row.category,
+                revenue: 0 ,
+                orders:0
+            }
+        }
+        grouped[key].revenue +=Number(row.revenue)|| 0
+        grouped[key].orders += Number(row.orders) || 0
+    })
+    return Object.values(grouped)
+}
+
 //main cleaning function
 function cleanData(rows){
     const parsed = rows.map((row)=>({
@@ -195,8 +229,10 @@ const imputed = kept.map((row)=>({
     ?row.orders
     :medianOrders
 }))
+
+const aggregated = aggregateByMonth(imputed)
 return {
-    data:imputed,
+    data:aggregated,
     removedCount: removed.length,
     imputedCount:kept.filter(
         (r,i)=>r.revenue !==imputed[i].revenue||
@@ -216,6 +252,48 @@ function Dashboard(){
     const [parsed, setParsed] = useState(false)
     const [removed, setRemoved] = useState(0)
     const [imputed, setImputed] = useState(0)
+
+    //these are added for column mapper
+    const [rawData,setRawData] = useState([])
+    const [columns, setColumns] = useState([])
+    const [mapping, setMapping] = useState({})
+    const [showMapper, setShowMapper] = useState(false)
+
+    async function saveToBackend(data, filename){
+        try{
+            const response = await fetch('http://localhost:3001/save',{
+                method:'POST',
+                headers:{'Content-Tppe':'application/json'},
+                body:JSON.stringify({
+                    filename,totalRows:data.length,
+                    columns:Object.keys(data[0]||{}),
+                    data
+                })
+            })
+            await response.json()
+        }catch(err){
+             // silent fail, charts still show from state
+
+        }
+    }
+
+    function handleConfirmMapping(){
+        const remapped = rawData.map(row=>({
+            month:row[mapping.month] || '',
+            item:row[mapping.item] || '',
+            category: row[mapping.category] || 'Uncategorised',
+            revenue: row[mapping.revenue] || 0,
+            orders: row[mapping.orders] || 0,
+        }))
+        const { data, removedCount, imputedCount } = cleanData(remapped)
+        setCsvData(data)
+        setRemoved(removedCount)
+        setImputed(imputedCount)
+        setParsed(true)
+        setShowMapper(false)
+        saveToBackend(data, file.name)
+        }
+    
 
     useEffect(()=>{
         fetch('http://localhost:3001/data')
@@ -263,42 +341,45 @@ function Dashboard(){
             header:true,
             skipEmptyLines:true,
             complete:async(result) =>{
-                //console.log('Parsed rows:',result.data)
-                const {data,removedCount,imputedCount} = cleanData(result.data)
-                setCsvData(data)
-                setRemoved(removedCount)
-                setImputed(imputedCount)
-                setParsed(true)
+                const csvColumns = result.meta.fields
+                const rows = result.data
+                const expectedColumns = ['month','item','revenue']
+                const hasExpectedColumns = expectedColumns.every(col =>
+                    csvColumns.map(c=>c.toLowerCase()).includes(col.toLowerCase())
+                )
+                if(hasExpectedColumns){
+                    const {data,removedCount, imputedCount} = cleanData(rows)
+                    setCsvData(data)
+                    setRemoved(removedCount)
+                    setImputed(imputedCount)
+                    setParsed(true)
+                    await saveToBackend(data, file.name)
+                }else{
+                    setRawData(rows)
+                    setColumns(csvColumns)
+                    setShowMapper(true)
 
-                try{
-                    // console.log('Sending to backend:', {
-                    //     filename: file.name,
-                    //     totalRows: data.length,
-                    //     columns: Object.keys(data[0] || {}),
-                    //     firstRow: data[0]
-                    //     })
-                        const response = await fetch('http://localhost:3001/save',{
-                        method:'POST',
-                        headers:{
-                            'Content-Type':'application/json'
-                        },
-                        body:JSON.stringify({
-                            filename:file.name,
-                            totalRows: data.length,
-                            columns:Object.keys(data[0]||{}),
-                            data:data
+                    const autoMapping={}
+                    csvColumns.forEach(col =>{
+                        const lower = col.toLowerCase()
+                        if (lower.includes('month') || lower.includes('date') || lower.includes('period'))
+                            autoMapping.month = col
+                        if (lower.includes('item') || lower.includes('product') || lower.includes('dish') || lower.includes('name'))
+                            autoMapping.item = col
+                        if (lower.includes('revenue') || lower.includes('sales') || lower.includes('amount') || lower.includes('income'))
+                            autoMapping.revenue = col
+                        if (lower.includes('order') || lower.includes('qty') || lower.includes('quantity') || lower.includes('count'))
+                            autoMapping.orders = col
+                        if (lower.includes('category') || lower.includes('type') || lower.includes('dept'))
+                            autoMapping.category = col
                         })
-                    })
-                    const result = await response.json()
-                    //console.log('Saved to backend:',result.message)
-                }catch(err){
-                    console.error('Failed to save to backend:',err.message)
+                        setMapping(autoMapping)
                 }
             },
             error:()=>{
                 setError('Could not read file. Please try again.')
-               
             }
+            
         })
     },[file])
     return (
@@ -422,6 +503,18 @@ function Dashboard(){
                     </div>
                 </div>
             )}
+            {/**Column mapper  */}
+            {showMapper && (
+                    <ColumnMapper
+                        columns={columns}
+                        mapping={mapping}
+                        onMappingChange={(field, value) =>
+                        setMapping(prev => ({ ...prev, [field]: value }))
+                        }
+                        onConfirm={handleConfirmMapping}
+                    />
+                    )}
+
              {/* Metric card */}
             {parsed && csvData.length>0 && (
                 <MetricCards csvData={csvData} />
