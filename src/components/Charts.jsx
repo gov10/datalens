@@ -38,7 +38,7 @@ import {
       return { monthlyData, categoryData }
     }
 
-    function Charts({ csvData }) {
+    function Charts({ csvData, currency='$' }) {
       const { monthlyData, categoryData } = prepareChartData(csvData)
 
       return (
@@ -59,7 +59,7 @@ import {
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="month" fontSize={12} />
                 <YAxis fontSize={12} />
-                <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']} />
+                <Tooltip formatter={(value) => [`${currency}${value.toLocaleString()}`, 'Revenue']} />
                 <Bar dataKey="revenue" fill="#EA580C" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -119,7 +119,7 @@ import {
                     <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']} />
+                <Tooltip formatter={(value) => [`${currency}${value.toLocaleString()}`, 'Revenue']} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>

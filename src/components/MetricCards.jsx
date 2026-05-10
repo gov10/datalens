@@ -1,4 +1,4 @@
-export default function MetricCards({csvData}){
+export default function MetricCards({csvData, currency = '$'}){
     //calculate all metrics from raw data
     const totalRevenue = csvData.reduce((sum,row)=>
         sum +(Number(row.revenue) || 0),0)
@@ -37,7 +37,7 @@ export default function MetricCards({csvData}){
     const cards = [
             {
             label: 'Total Revenue',
-            value: `$${totalRevenue.toLocaleString()}`,
+            value: `${currency}${totalRevenue.toLocaleString()}`,
             icon: '💰',
             bg: '#FFEDD5',
             color: '#7C2D12'
@@ -51,7 +51,7 @@ export default function MetricCards({csvData}){
             },
             {
             label: 'Avg Order Value',
-            value: `$${avgOrder}`,
+            value: `${currency}${avgOrder}`,
             icon: '📊',
             bg: '#FEE2E2',
             color: '#991B1B'

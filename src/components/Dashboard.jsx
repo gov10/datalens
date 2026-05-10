@@ -194,7 +194,9 @@ function aggregateByMonth(rows){
         grouped[key].revenue +=Number(row.revenue)|| 0
         grouped[key].orders += Number(row.orders) || 0
     })
-    return Object.values(grouped)
+    const monthOrder = ['Jan','Feb','Mar','Apr','May','Jun',
+                      'Jul','Aug','Sep','Oct','Nov','Dec']
+    return Object.values(grouped).sort((a,b)=>monthOrder.indexOf(a.month)-monthOrder.indexOf(b.month))
 }
 
 //main cleaning function
@@ -258,6 +260,8 @@ function Dashboard(){
     const [columns, setColumns] = useState([])
     const [mapping, setMapping] = useState({})
     const [showMapper, setShowMapper] = useState(false)
+
+    const [currency, setCurrency] = useState('$')
 
     async function saveToBackend(data, filename){
         try{
@@ -387,6 +391,21 @@ function Dashboard(){
 
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:20}}>
                 <h1 style={{fontSize:20,fontWeight:600,color:'#7C2D12'}}>Dashboard</h1>
+                {/**Currencyu selector */}
+                <select value={currency} onChange={(e)=> setCurrency(e.target.value)}
+                    style={{padding:'8px', borderRadius:8,border:'1px solid #FDBA74',fontSize:12,color:'7C2D12',background:'#FFFBF7',cursor:'pointer',outline:'none'}}>
+                        
+                        <option value="रु">NPR</option>
+                        <option value="A$">A$ AUD</option>
+                        <option value="£">£ GBP</option>
+                        <option value="€">€ EUR</option>
+                        <option value="₹">₹ INR</option>
+                        <option value="¥">¥ JPY</option>
+                        <option value="NZ$">NZ$ NZD</option>
+                        <option value="S$">S$ SGD</option>
+                    </select>
+
+
                 <button  onClick={() => document.getElementById('csvInput').click() } style={{
                     background:'#EA580C',
                     color:'#fff',
@@ -517,7 +536,7 @@ function Dashboard(){
 
              {/* Metric card */}
             {parsed && csvData.length>0 && (
-                <MetricCards csvData={csvData} />
+                <MetricCards csvData={csvData}  currency={currency}/>
             )}
             {/* Two column layout — insights left, charts right */}
             {parsed && csvData.length > 0 && (
@@ -529,8 +548,8 @@ function Dashboard(){
                 alignItems: 'stretch'
             }}>
 
-                {/* Left — Auto Insights */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Left — Auto Insights */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
             {/* Auto Insights */}
             <div style={{
@@ -539,7 +558,7 @@ function Dashboard(){
                 padding: 20,
                 border: '1px solid #FDBA74',
             }}>
-                <AutoInsights csvData={csvData} />
+                <AutoInsights csvData={csvData} currency={currency}/>
             </div>
 
             {/* Top Items by Revenue */}
@@ -608,7 +627,7 @@ function Dashboard(){
                             {item}
                             </span>
                             <span style={{ fontSize: 12, color: '#92400E' }}>
-                            ${revenue.toLocaleString()}
+                            {currency}{revenue.toLocaleString()}
                             </span>
                         </div>
                         <div style={{
@@ -643,7 +662,7 @@ function Dashboard(){
                                 gap: 16
                                 }}>
             
-                            <Charts csvData={csvData} />
+                            <Charts csvData={csvData} currency={currency}/>
                             </div>
 
                         </div>

@@ -1,4 +1,4 @@
- export default function AutoInsights({csvData}){
+ export default function AutoInsights({csvData,currency='$'}){
     
     function generateInsights(){
         if(!csvData.length) return []
@@ -49,7 +49,7 @@
                 color:'#E1F5EE',
                 textColor:'#085041',
                 title:`${topItem} is your best seller`,
-                detail:`Contributing ${pct}% of total revenue-$${topRevenue.toLocaleString()} overall. Keep it well stocked and prmonently on your menu `
+                detail:`Contributing ${pct}% of total revenue-${currency}${topRevenue.toLocaleString()} overall. Keep it well stocked and prmonently on your menu `
 
             })
         }
@@ -64,7 +64,7 @@
                 color: '#FCEBEB',
                 textColor: '#A32D2D',
                 title: `${worstItem} is underperforming`,
-                detail: `Only ${pct}% of total revenue $${worstRevenue.toLocaleString()}. Consider a promotion, a price reduction, or replacing it entirely.`
+                detail: `Only ${pct}% of total revenue ${currency}${worstRevenue.toLocaleString()}. Consider a promotion, a price reduction, or replacing it entirely.`
 
             })
         }
@@ -76,7 +76,7 @@
                 color: '#FAEEDA',
                 textColor: '#633806',
                 title: `${bestMonth} was your strongest month`,
-                detail: `Revenue peaked at $${bestRevenue.toLocaleString()}. Make sure you are fully staffed and stocked during this period next year.`
+                detail: `Revenue peaked at ${currency}${bestRevenue.toLocaleString()}. Make sure you are fully staffed and stocked during this period next year.`
 
             })
         }
@@ -89,7 +89,7 @@
                 color: '#FCEBEB',
                 textColor: '#A32D2D',
                 title: `${worstMonth} was your slowest month`,
-                detail: `Revenue dropped to $${worstRevenue.toLocaleString()}. Consider running promotions or special events during this period next year.`
+                detail: `Revenue dropped to ${currency}${worstRevenue.toLocaleString()}. Consider running promotions or special events during this period next year.`
             })
 
         }
@@ -129,7 +129,7 @@
                 color: '#E1F5EE',
                 textColor: '#085041',
                 title: `Revenue grew ${growth}% over the period`,
-                detail: `From $${first.toLocaleString()} in ${sortedMonths[0][0]} to $${last.toLocaleString()} in ${sortedMonths[sortedMonths.length - 1][0]}. Strong growth, keep doing what is working.`
+                detail: `From $${first.toLocaleString()} in ${sortedMonths[0][0]} to ${currency}${last.toLocaleString()} in ${sortedMonths[sortedMonths.length - 1][0]}. Strong growth, keep doing what is working.`
                 })
                 } else if (growth < 0) {
                     insights.push({
@@ -156,7 +156,7 @@
                 icon: '🛒',
                 color: '#EEEDFE',
                 textColor: '#3C3489',
-                title: `Average order value is $${avg}`,
+                title: `Average order value is ${currency}${avg}`,
                 detail: avg < 15
                 ? `This is relatively low. Consider upselling strategies, combo deals, add-ons, or premium menu items could increase this.`
                 : avg < 30
