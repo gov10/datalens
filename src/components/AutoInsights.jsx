@@ -49,7 +49,7 @@
                 color:'#E1F5EE',
                 textColor:'#085041',
                 title:`${topItem} is your best seller`,
-                detail:`Contributing ${pct}% of total revenue-${currency}${topRevenue.toLocaleString()} overall. Keep it well stocked and prmonently on your menu `
+                detail:`Contributing ${pct}% of total revenue-${currency}${topRevenue.toLocaleString()} overall. Keep it well stocked and prominently on your menu `
 
             })
         }
@@ -129,7 +129,7 @@
                 color: '#E1F5EE',
                 textColor: '#085041',
                 title: `Revenue grew ${growth}% over the period`,
-                detail: `From $${first.toLocaleString()} in ${sortedMonths[0][0]} to ${currency}${last.toLocaleString()} in ${sortedMonths[sortedMonths.length - 1][0]}. Strong growth, keep doing what is working.`
+                detail: `From ${currency}${first.toLocaleString()} in ${sortedMonths[0][0]} to ${currency}${last.toLocaleString()} in ${sortedMonths[sortedMonths.length - 1][0]}. Strong growth, keep doing what is working.`
                 })
                 } else if (growth < 0) {
                     insights.push({
@@ -137,7 +137,7 @@
                     color: '#FCEBEB',
                     textColor: '#A32D2D',
                     title: `Revenue declined ${Math.abs(growth)}% over the period`,
-                    detail: `From $${first.toLocaleString()} in ${sortedMonths[0][0]} to $${last.toLocaleString()} in ${sortedMonths[sortedMonths.length - 1][0]}. Review your pricing and menu to reverse this trend.`
+                    detail: `From ${currency}${first.toLocaleString()} in ${sortedMonths[0][0]} to ${currency}${last.toLocaleString()} in ${sortedMonths[sortedMonths.length - 1][0]}. Review your pricing and menu to reverse this trend.`
                     })
                 } else {
                     insights.push({

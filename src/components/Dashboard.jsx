@@ -5,6 +5,7 @@ import MetricCards from './MetricCards';
 import CollapsableTable from './CollapsableTable';
 import AutoInsights from './AutoInsights';
 import ColumnMapper from './ColumnMapper';
+import useWindowSize from './hooks/useWindowSize'
 
 //Data Cleaning layer
 const wordToNumber = {
@@ -247,6 +248,8 @@ return {
 
 
 function Dashboard(){
+    const { isMobile } = useWindowSize()
+    //console.log('isMobile:', isMobile, 'width:', window.innerWidth)
     const [file,setFile] = useState(null);
     const[csvData,setCsvData] = useState([])
     const [loading,setLoading] = useState(true)
@@ -263,11 +266,13 @@ function Dashboard(){
 
     const [currency, setCurrency] = useState('$')
 
+
+
     async function saveToBackend(data, filename){
         try{
             const response = await fetch('http://localhost:3001/save',{
                 method:'POST',
-                headers:{'Content-Tppe':'application/json'},
+                headers:{'Content-Type':'application/json'},
                 body:JSON.stringify({
                     filename,totalRows:data.length,
                     columns:Object.keys(data[0]||{}),
@@ -387,11 +392,11 @@ function Dashboard(){
         })
     },[file])
     return (
-        <main style ={{flex:1,background: '#FFF7ED',minWidth: 0, padding: 24}}> 
+        <main style ={{flex:1,background: '#FFF7ED',minWidth: 0, padding: isMobile ? 12 : 24}}> 
 
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:20}}>
                 <h1 style={{fontSize:20,fontWeight:600,color:'#7C2D12'}}>Dashboard</h1>
-                {/**Currencyu selector */}
+                {/**Currency selector */}
                 <select value={currency} onChange={(e)=> setCurrency(e.target.value)}
                     style={{padding:'8px', borderRadius:8,border:'1px solid #FDBA74',fontSize:12,color:'7C2D12',background:'#FFFBF7',cursor:'pointer',outline:'none'}}>
                         
@@ -538,17 +543,18 @@ function Dashboard(){
             {parsed && csvData.length>0 && (
                 <MetricCards csvData={csvData}  currency={currency}/>
             )}
-            {/* Two column layout — insights left, charts right */}
+
+            {/* Two column layout, insights left, charts right */}
             {parsed && csvData.length > 0 && (
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1.8fr',
+                gridTemplateColumns: isMobile ? '1fr' : '1fr 1.8fr',
                 gap: 16,
                 marginBottom: 16,
                 alignItems: 'stretch'
             }}>
 
-            {/* Left — Auto Insights */}
+            {/* this makes auto insight left*/}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
             {/* Auto Insights */}
@@ -597,12 +603,7 @@ function Dashboard(){
                     const pct = Math.round((revenue / max) * 100)
                     const colors = ['#EA580C','#FB923C','#FCD34D','#FDBA74','#FED7AA']
                     return (
-                    <div key={item} style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 12,
-                        marginBottom: 12
-                    }}>
+                    <div key={item} style={{display: 'flex',alignItems: 'center',gap: 12,marginBottom: 12}}>
                         <div style={{
                         width: 24, height: 24,
                         borderRadius: '50%',
@@ -636,13 +637,8 @@ function Dashboard(){
                             height: 6,
                             overflow: 'hidden'
                         }}>
-                            <div style={{
-                            width: `${pct}%`,
-                            height: '100%',
-                            background: colors[i],
-                            borderRadius: 4
-                            }} />
-                        </div>
+                                <div style={{width: `${pct}%`,height: '100%',background: colors[i],borderRadius: 4}} />
+                            </div>
                         </div>
                     </div>
                     )
@@ -650,28 +646,21 @@ function Dashboard(){
             </div>
 
             </div>
-
-                            
-                            
-                            
-
-                            {/* Right — Charts */}
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 16
-                                }}>
+                 {/* Right Charts */}
+                <div style={{display: 'flex',flexDirection: 'column',gap: 16}}>
             
-                            <Charts csvData={csvData} currency={currency}/>
-                            </div>
+                <Charts csvData={csvData} currency={currency}/>
+                </div>
 
-                        </div>
+            </div>
                         )}
 
             
           {parsed && csvData.length > 0 && (
-            <CollapsableTable csvData={csvData} />
-            )}   
+            <CollapsableTable csvData={csvData} currency={currency}/>
+            )}  
+            
+            
         </main>
 
     )

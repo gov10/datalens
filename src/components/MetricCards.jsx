@@ -1,5 +1,9 @@
+import useWindowSize from './hooks/useWindowSize'
+
 export default function MetricCards({csvData, currency = '$'}){
+    const { isMobile } = useWindowSize()
     //calculate all metrics from raw data
+
     const totalRevenue = csvData.reduce((sum,row)=>
         sum +(Number(row.revenue) || 0),0)
 
@@ -83,7 +87,8 @@ export default function MetricCards({csvData, currency = '$'}){
     return (
         <div style={{
             display:'grid',
-            gridTemplateColumns:'repeat(3,1fr)',
+
+            gridTemplateColumns:isMobile ? '1fr 1fr': 'repeat(3,1fr)',
             gap:12,
             marginBottom:24
         }}>
