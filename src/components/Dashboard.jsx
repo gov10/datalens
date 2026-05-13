@@ -509,7 +509,7 @@ function Dashboard(){
             )}
             
            
-            {/**empty state- only shows if not loading and no file*/}
+            {/**empty state only shows if not loading and no file*/}
             {!loading && !file && !parsed&&(
                 <div style={{
                     border: '2px dashed #FDBA74',

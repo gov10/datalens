@@ -51,7 +51,7 @@ import {
             padding: 24,
             border: '1px solid #e2e8f0'
           }}>
-            <h2 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20, color: '#1a1a2e' }}>
+            <h2 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20, color: '#7C2D12' }}>
               Monthly Revenue
             </h2>
             <ResponsiveContainer width="100%" height={300}>

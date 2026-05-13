@@ -1,6 +1,5 @@
-function Sidebar(activePage,setActivePage,isMobile, onClose){
-    const navItems = ['Dashboard','Uploads', 'Reports','payment']
-
+function Sidebar({activePage,setActivePage,isMobile, onClose}){
+    
     return (
         <aside style={{
             width:200,
@@ -24,7 +23,7 @@ function Sidebar(activePage,setActivePage,isMobile, onClose){
                     fontSize:11,color:'#EA580C',textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:12, fontWeight:500
                 }}>Navigation</div>
 
-                {['Dashbaord','Uploads','Reports'].map((item)=>(
+                {['Dashboard','Uploads','Reports'].map((item)=>(
                     <div 
                     key={item}
                     onClick={()=>{

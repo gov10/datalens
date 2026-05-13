@@ -22,20 +22,35 @@ function Header({isMobile, sidebarOpen, setSidebarOpen}){
 
                     </button>
                 )}
+                <div style={{display:'flex',alignItems:'center',gap:10}}>
+                    <div style={{display:'flex',alignItems:'flex-end',gap:3,height:24,flexShrink:0}}>
+                        {[38, 62, 85, 54, 100].map((h, i) => (
+                            <div key={i} style={{
+                                width: 4,
+                                height: `${h}%`,
+                                background: '#FED7AA',
+                                borderRadius: '1px 1px 0 0'
+                                }} />
+                            ))}
+                    </div>
+                    <div style={{
+                        fontFamily: "'Oxanium', sans-serif",
+                        fontWeight: 800,
+                        fontSize: 20,
+                        color: '#FED7AA',
+                        letterSpacing: '0.06em',
+                        textTransform: 'uppercase'
+                            }}>
+                        DATALENS
+                    </div>
+                </div>
             </div>
-            <div style={{
-                fontSize:20,fontWeight:700, color: '#FED7AA'  
-            }}>
-                Data<span style={{color:'#EA580C'}}>Lens </span>
-            </div>
-            {/* Tagline */}
-            {!isMobile &&(
-                <div style={{
-                fontSize:20, color:'#FDBA74'
-            }}>Tool for your resturant</div>
-
+             {!isMobile && (
+                <div style={{ fontSize: 13, color: '#FDBA74' }}>
+                Data Made Simple
+                </div>
             )}
-            
+
         </header>
     )
 }
