@@ -1,0 +1,97 @@
+month,item,category,revenue,orders
+Jan,Burger,Food,2800,142
+Jan,Pizza,Food,,98
+Jan,Coke,Drinks,four hundred fifty,210
+Jan,Pasta,Food,1200,
+Jan,Coffee,Drinks,380,one hundred ninety
+Jan,Garlic Bread,Food,520,88
+Jan,,Drinks,290,145
+Jan,Steak,Food,three thousand two hundred,48
+february,Burger,Food,3100,156
+Feb,Pizza,Food,2100,108
+Feb,Coke,Drinks,,225
+feb,Pasta,Food,1350,72
+Feb,Coffee,Drinks,four ten,205
+Feb,Garlic Bread,Food,560,
+Feb,Orange Juice,Drinks,310,one hundred fifty five
+,Steak,Food,3500,52
+Mar,Burger,Food,2900,148
+Mar,Pizza,Food,2.2k,112
+MAR,Coke,Drinks,510,240
+Mar,Pasta,Food,,75
+March,Coffee,Drinks,430,215
+Mar,Garlic Bread,Food,590,ninety nine
+Mar,Orange Juice,Drinks,330,165
+Mar,,Food,3300,50
+april,Burger,Food,3300,165
+Apr,Pizza,Food,2400,
+Apr,Coke,Drinks,530,248
+Apr,Pasta,Food,one thousand five hundred,80
+Apr,Coffee,Drinks,450,225
+Apr,,Food,610,103
+Apr,Orange Juice,Drinks,,175
+Apr,Steak,Food,3.7k,55
+May,Burger,Food,3500,178
+may,Pizza,Food,2600,131
+May,Coke,Drinks,580,
+May,Pasta,Food,1650,eighty eight
+May,Coffee,Drinks,,245
+May,Garlic Bread,Food,six fifty,110
+May,Orange Juice,Drinks,390,195
+May,Steak,Food,4100,61
+Jun,Burger,Food,,192
+JUN,Pizza,Food,2900,146
+Jun,Coke,Drinks,620,two ninety
+Jun,Pasta,Food,1800,96
+Jun,Coffee,Drinks,520,
+june,Garlic Bread,Food,700,118
+Jun,Orange Juice,Drinks,420,210
+Jun,Steak,Food,four thousand four hundred,66
+Jul,Burger,Food,4100,208
+Jul,Pizza,Food,,156
+Jul,Coke,Drinks,680,318
+JULY,Pasta,Food,1950,104
+Jul,Coffee,Drinks,550,275
+Jul,Garlic Bread,Food,740,
+Jul,Orange Juice,Drinks,four sixty,230
+,Steak,Food,4800,72
+Aug,Burger,Food,4300,218
+Aug,Pizza,Food,3200,
+august,Coke,Drinks,710,332
+Aug,Pasta,Food,two thousand,107
+Aug,Coffee,Drinks,570,285
+Aug,Garlic Bread,Food,,128
+Aug,Orange Juice,Drinks,480,240
+Aug,Steak,Food,5k,75
+Sep,Burger,Food,3900,198
+Sep,Pizza,Food,2800,one forty two
+Sep,Coke,Drinks,,305
+SEP,Pasta,Food,1850,99
+Sep,Coffee,Drinks,540,270
+Sep,,Drinks,720,121
+Sep,Orange Juice,Drinks,440,
+september,Steak,Food,4500,68
+Oct,Burger,Food,3600,182
+Oct,Pizza,Food,two thousand six hundred,131
+Oct,Coke,Drinks,600,
+oct,Pasta,Food,1700,91
+Oct,Coffee,Drinks,,255
+Oct,Garlic Bread,Food,680,one fifteen
+,Orange Juice,Drinks,410,205
+Oct,Steak,Food,4.2k,63
+Nov,Burger,Food,3200,162
+NOV,Pizza,Food,2300,116
+Nov,Coke,Drinks,550,
+Nov,Pasta,Food,1550,eighty three
+Nov,Coffee,Drinks,480,240
+Nov,Garlic Bread,Food,,106
+november,Orange Juice,Drinks,370,185
+Nov,Steak,Food,three thousand eight hundred,57
+Dec,Burger,Food,3800,192
+Dec,Pizza,Food,,142
+dec,Coke,Drinks,660,309
+Dec,Pasta,Food,1900,one hundred one
+Dec,Coffee,Drinks,560,280
+Dec,Garlic Bread,Food,750,
+Dec,Orange Juice,Drinks,,225
+Dec,Steak,Food,4600,sixty nine
