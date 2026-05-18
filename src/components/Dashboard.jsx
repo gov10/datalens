@@ -304,43 +304,43 @@ function Dashboard({showLanding = false, onLandingDismiss}){
         }
     
 
-    useEffect(()=>{
+    // useEffect(()=>{
 
-        if (showLanding) return
-        fetch('https://datalens-backend-m3pc.onrender.com/data')
-        .then(res =>res.json())
-        .then(result=>{
-            try{
-                //console.log('MongoDB response:', JSON.stringify(result))//debugger
-                const uploads = result.uploads
-                if(!uploads){
-                    //console.log('No uploads field in respons')
-                    setLoading(false)
-                    return
-                }
-                if(uploads.length===0){
-                   //console.log('Uploads array is empty')
-                    setLoading(false)
-                    return
-                }
-                const latest = result.uploads[0]
-               // console.log('Latest upload:', latest.filename, latest.totalRows)//debugger
+    //     if (showLanding) return
+    //     fetch('https://datalens-backend-m3pc.onrender.com/data')
+    //     .then(res =>res.json())
+    //     .then(result=>{
+    //         try{
+    //             //console.log('MongoDB response:', JSON.stringify(result))//debugger
+    //             const uploads = result.uploads
+    //             if(!uploads){
+    //                 //console.log('No uploads field in respons')
+    //                 setLoading(false)
+    //                 return
+    //             }
+    //             if(uploads.length===0){
+    //                //console.log('Uploads array is empty')
+    //                 setLoading(false)
+    //                 return
+    //             }
+    //             const latest = result.uploads[0]
+    //            // console.log('Latest upload:', latest.filename, latest.totalRows)//debugger
 
-                setCsvData(latest.data)
-                setParsed(true)
-                setLoading(false)
+    //             setCsvData(latest.data)
+    //             setParsed(true)
+    //             setLoading(false)
                
 
-            }catch(err){
-                console.log('Error inside then:',err.message)
-                setLoading(false)
-            }
-        })
-        .catch(err=>{
-            //console.log('network error',err.message)
-            setLoading(false)
-        })
-    },[])
+    //         }catch(err){
+    //             console.log('Error inside then:',err.message)
+    //             setLoading(false)
+    //         }
+    //     })
+    //     .catch(err=>{
+    //         //console.log('network error',err.message)
+    //         setLoading(false)
+    //     })
+    // },[])
 
     // useEffect watches file — runs when file changes
     useEffect(()=>{
