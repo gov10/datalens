@@ -18,3 +18,4 @@ If you are developing a production application, we recommend using TypeScript wi
 =======
 # datalens
 >>>>>>> ae129f9a40237449604ef96e0cebbebadc82e56c
+Now,this web app is fully hosted in datalens-gray.vercel.app
