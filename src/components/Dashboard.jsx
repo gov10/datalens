@@ -270,7 +270,7 @@ function Dashboard({showLanding = false, onLandingDismiss}){
 
     async function saveToBackend(data, filename){
         try{
-            const response = await fetch('http://localhost:3001/save',{
+            const response = await fetch('https://datalens-backend-m3pc.onrender.com/save',{
                 method:'POST',
                 headers:{'Content-Type':'application/json'},
                 body:JSON.stringify({
@@ -307,7 +307,7 @@ function Dashboard({showLanding = false, onLandingDismiss}){
     useEffect(()=>{
 
         if (showLanding) return
-        fetch('http://localhost:3001/data')
+        fetch('https://datalens-backend-m3pc.onrender.com/data')
         .then(res =>res.json())
         .then(result=>{
             try{
