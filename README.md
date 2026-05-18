@@ -1,21 +1,46 @@
-<<<<<<< HEAD
-# React + Vite
+DataLens is Live
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack sales data dashboard for restaurant owners. Upload any CSV from your system 
 
-Currently, two official plugins are available:
+Live Demo: https://datalens-gray.vercel.app
+Features
+- Upload CSV from any POS system
+- Auto data cleaning and gap filling
+- Revenue trends and charts
+- Period-over-period comparison
+- Top items by revenue
+- Auto insights in plain English
+- Multi-currency support
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Tech Stack
 
-## React Compiler
+Frontend
+- React + Vite
+- Recharts
+- PapaParse
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Backend
+- Node.js + Express
+- MongoDB Atlas
+- Mongoose
 
-## Expanding the ESLint configuration
+Deployed on
+- Vercel (frontend)
+- Render (backend)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# datalens
->>>>>>> ae129f9a40237449604ef96e0cebbebadc82e56c
-Now,this web app is fully hosted in datalens-gray.vercel.app
+Getting Started
+
+```bash
+# Clone the repo
+git clone https://github.com/gov10/datalens.git
+
+# Install frontend dependencies
+cd datalens
+npm install
+npm run dev
+
+# Install backend dependencies
+cd datalens-backend
+npm install
+node server.js
+```
