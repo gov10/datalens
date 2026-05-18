@@ -252,7 +252,7 @@ function Dashboard({showLanding = false, onLandingDismiss}){
     //console.log('isMobile:', isMobile, 'width:', window.innerWidth)
     const [file,setFile] = useState(null);
     const[csvData,setCsvData] = useState([])
-    const [loading,setLoading] = useState(!showLanding)
+    const [loading,setLoading] = useState(false)
     const [error,setError] = useState('')
     const [parsed, setParsed] = useState(false)
     const [removed, setRemoved] = useState(0)
