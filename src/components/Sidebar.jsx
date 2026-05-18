@@ -1,4 +1,10 @@
 function Sidebar({activePage,setActivePage,isMobile, onClose}){
+
+    const navItems = [
+        {label:'Dashboard',active:true},
+        {label:'Uploads',active:false},
+        {label:'Reports',active:false}
+    ]
     
     return (
         <aside style={{
@@ -23,7 +29,7 @@ function Sidebar({activePage,setActivePage,isMobile, onClose}){
                     fontSize:11,color:'#EA580C',textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:12, fontWeight:500
                 }}>Navigation</div>
 
-                {['Dashboard','Uploads','Reports'].map((item)=>(
+                {navItems.map((item)=>(
                     <div 
                     key={item}
                     onClick={()=>{
@@ -34,13 +40,32 @@ function Sidebar({activePage,setActivePage,isMobile, onClose}){
                         padding:'8px 12px',
                         borderRadius:8,
                         fontSize:13,
-                        cursor:'pointer',
+                        cursor:item.active ? 'pointer':'not-allowed',
                         marginBottom:4,
-                        background:activePage===item? '#FFEDD5' : 'transparent',
-                        color: activePage === item ? '#7C2D12' : '#92400E',
+                        background:activePage===item.label ? '#FFEDD5' : 'transparent',
+                        color: activePage === item.label ? '#7C2D12' : '#92400E',
                         fontWeight: activePage === item ? 600 : 400,
+                        opacity:item.active ? 1:0.45,
+                        display:'flex',
+                        justifyContent:'space-between',
+                        alignItems: 'center',
+                        transition:'all 0.15s'
                     }}>
-                        {item}
+                        {item.label}
+                        {/**Coming soon */}
+                        {!item.active &&(
+                            <span style={{
+                                fontsize:10,
+                                background:'#FDBA74',
+                                color:'#7C2D12',
+                                padding:'2px 6px',
+                                borderRadius:20,
+                                fontWeight:600,
+                                letterSpacing:'0.05em',
+                                textTransform:'uppercase'
+
+                            }}>Soon</span>
+                        )}
                     </div>
                 ))}
 

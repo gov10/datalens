@@ -247,12 +247,12 @@ return {
 
 
 
-function Dashboard(){
+function Dashboard({showLanding = false, onLandingDismiss}){
     const { isMobile } = useWindowSize()
     //console.log('isMobile:', isMobile, 'width:', window.innerWidth)
     const [file,setFile] = useState(null);
     const[csvData,setCsvData] = useState([])
-    const [loading,setLoading] = useState(true)
+    const [loading,setLoading] = useState(!showLanding)
     const [error,setError] = useState('')
     const [parsed, setParsed] = useState(false)
     const [removed, setRemoved] = useState(0)
@@ -305,6 +305,8 @@ function Dashboard(){
     
 
     useEffect(()=>{
+
+        if (showLanding) return
         fetch('http://localhost:3001/data')
         .then(res =>res.json())
         .then(result=>{
@@ -393,13 +395,13 @@ function Dashboard(){
     },[file])
     return (
         <main style ={{flex:1,background: '#FFF7ED',minWidth: 0, padding: isMobile ? 12 : 24}}> 
-
+            {!showLanding &&(
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:20}}>
                 <h1 style={{fontSize:20,fontWeight:600,color:'#7C2D12'}}>Dashboard</h1>
                 {/**Currency selector */}
                 <select value={currency} onChange={(e)=> setCurrency(e.target.value)}
                     style={{padding:'8px', borderRadius:8,border:'1px solid #FDBA74',fontSize:12,color:'7C2D12',background:'#FFFBF7',cursor:'pointer',outline:'none'}}>
-                        
+                        <option value="$">$ USD</option>
                         <option value="रु">NPR</option>
                         <option value="A$">A$ AUD</option>
                         <option value="£">£ GBP</option>
@@ -410,8 +412,8 @@ function Dashboard(){
                         <option value="S$">S$ SGD</option>
                     </select>
 
-
-                <button  onClick={() => document.getElementById('csvInput').click() } style={{
+                
+                    <button  onClick={() => document.getElementById('csvInput').click() } style={{
                     background:'#EA580C',
                     color:'#fff',
                     border:'none',
@@ -420,7 +422,10 @@ function Dashboard(){
                     fontSize: 13,
                     cursor:'pointer'
                 }}>Upload CSV</button>
+
+                
             </div>
+            )}
 
              {/* Hidden file input */}
             <input 
@@ -435,6 +440,7 @@ function Dashboard(){
                 setError('')
                 setRemoved(0)
                 setImputed(0)
+                if (onLandingDismiss) onLandingDismiss() 
 
             }}
             />
@@ -511,29 +517,113 @@ function Dashboard(){
            
             {/**empty state only shows if not loading and no file*/}
             {!loading && !file && !parsed&&(
+                <>
                 <div style={{
-                    border: '2px dashed #FDBA74',
+                   
                     borderRadius:12,
-                    padding:'60px 20px',
+                    padding:isMobile ? '60px 20px':'60px 32px',
                     textAlign:'center',
-                    background:'#fff'
+                    background:'#fff',
+                    border:'0.5px solid #FDA74'
                 }}>
-                    <div style={{fontSize:40,marginBottom:12}}>🍽️</div>
-                    <div style={{fontSize:16,fontWeight:600,color: '#7C2D12',marginBottom:6}}>
-                    No data yet
+                    <div style={{display:'flex',alignItems:'flex-end',gap:6,height:56,justifyContent:'center',marginBottom:24}}>
+                        {[38,55,85,62,100,72,90].map((h,i)=>(
+                            <div key={i} style={{width:10,height:`${h}%`,background:'#EA580C',borderRadius:'2px 2px 0 0',animation:`shimmer 1.5s ease-in-out ${i*0.2}s infinite alternate`}}/>
+                        ))}
                     </div>
-                    <div style= {{fontSize:13, color:'#92400E'}}>
-                    Upload a Csv file to see  your dashboard
+                    {/**animation injection */}
+                    <style>{`@keyframes shimmer { from {opacity:0.35;transform:scaleY(0.8);} to {opacity:1; transform:scaleY(1);}}`}</style>
+                    {/**wordmark */}
+                    <div style={{fontSize:15,letterSpacing:'0.15em',color:'#EA580C',fontWeight:600,textTransform:'uppercase',marginBottom:10}}>Datalens</div>
+                    {/**Headline */}
+                    <div style={{fontSize:isMobile ? 24:32,fontWeight:700,color:'#7C2D12',lineHeight:1.2,marginBottom:12}}>Your Restaurant <br/>Understood</div>
+                    <div style={{fontSize:16,color:'#92400E',marginBottom:32,maxWidth:420,marginLeft:'auto',marginRight:'auto',lineHeight:1.7}}>
+                        Upload CSV file from any POS system and get instant insights about your sales in plain english
+                    </div>
+                    {/**button */}
+                    <button
+                    onClick={()=>document.getElementById('csvInput').click()}
+                    style={{background:'#EA580C', color:'#fff', border:'none',padding:'14px 36px', borderRadius:10,fontSize:20,fontWeight:600,cursor:'pointer',letterSpacing:'0.2em',marginBottom:28}}>
+                        Upload your CSV
+                    </button>
+                    <div style={{display:'flex',justifyContent:'center',gap:isMobile ? 12 :24,flexWrap:'wrap'}}>
+                        {['Free','No account', '10 second result', 'Any CSV format'].map((text,i)=>(
+                            <div key={i} style={{fontSize:18,color:'#92400E',opacity:0.7}}>
+                                {text}
+                            </div>
+                        ))}
+                                                                                                                                                 
+                    </div>
+
+                </div>
+                {/**How it work section */}
+            
+                <div style={{borderTop:'0.5px solid #FDBA74', padding:isMobile ? '24px 16px':'28px 32px'}}>
+                    <div style={{fontSize:14, letterSpacing:'0.1em',textTransform:'uppercase',color:'#92400E',textAlign:'center',marginBottom:20,fontWeight:600 }}>
+                        How it works
+                    </div>
+                    <div style={{display:'grid',
+                        gridTemplateColumns: isMobile ? '1fr':'repeat(3,1fr)',
+                        gap:12, 
+                        
+                    }}>
+                        {[
+                            {num:1, title:'Upload your CSV',desc:'Your Exported CSV from any system.'},
+                            {num:2,title:'Auto-cleaned', desc:'Datalens fixes messy data and fills gap.'},
+                            {num:3,title:'Instant insights',desc:'Charts, trends and comparisons ready insights.'}
+                        ].map(({num, title, desc})=>(
+                            <div key={num} style={{background:'#fff',borderRadius:9,padding:'32px 20px',textAlign:'center'}}>
+                                <div style={{
+                                    width: 28, height: 28,
+                                    borderRadius: '50%',
+                                    background: '#EA580C',
+                                    color: '#fff',
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    margin: '0 auto 10px'
+                                }}>{num}</div>
+                                <div style={{ fontSize: 13, fontWeight: 600, color: '#7C2D12', marginBottom: 4 }}>{title}</div>
+                                <div style={{ fontSize: 13, color: '#92400E', lineHeight: 1.6 }}>{desc}</div>
+                            </div>  
+                        ))}
+                        
                     </div>
                 </div>
+                <div style={{
+                    textAlign: 'center',
+                    padding: '24px',
+                    fontSize: 13,
+                    color: '#92400E',
+                    opacity: 0.5
+                }}>
+                    Restaurant owner can use this dashboard to view their sales trends
+                    <div style={{ marginTop: 8, fontSize: 12 }}>
+                        © {new Date().getFullYear()} DataLens · Built by Govinda Gurung
+                    </div>
+                     <div style={{marginTop:4, fontSize:12}}>
+                        This is my personal project. For further feedback and suggestion, please email {' '}
+                        <a style={{color:'#92400E'}}>gurunggovin10@gmail.com</a>
+                        
+                        {/**<a href="https://github.com/gov10" style={{color:'#92400E'}}>GitHub</a>*/}
+                    </div>
+                </div>
+                </>
+                
             )}
+            
+
+               
+
             {/**Column mapper  */}
             {showMapper && (
                     <ColumnMapper
                         columns={columns}
                         mapping={mapping}
-                        onMappingChange={(field, value) =>
-                        setMapping(prev => ({ ...prev, [field]: value }))
+                        onMappingChange={(field, val) =>
+                        setMapping(prev => ({ ...prev, [field]: val }))
                         }
                         onConfirm={handleConfirmMapping}
                     />

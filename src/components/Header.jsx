@@ -1,4 +1,4 @@
-function Header({isMobile, sidebarOpen, setSidebarOpen}){
+function Header({isMobile, sidebarOpen, setSidebarOpen,onLogoClick}){
     return (
         <header style={{
             background:'#7C2D12',
@@ -22,14 +22,15 @@ function Header({isMobile, sidebarOpen, setSidebarOpen}){
 
                     </button>
                 )}
-                <div style={{display:'flex',alignItems:'center',gap:10}}>
+                
+                <div onClick={onLogoClick} style={{display:'flex',alignItems:'center',gap:10,cursor:'pointer'}}>
                     <div style={{display:'flex',alignItems:'flex-end',gap:3,height:24,flexShrink:0}}>
                         {[38, 62, 85, 54, 100].map((h, i) => (
                             <div key={i} style={{
                                 width: 4,
                                 height: `${h}%`,
                                 background: '#FED7AA',
-                                borderRadius: '1px 1px 0 0'
+                                borderRadius: '2px 2px 0 0'
                                 }} />
                             ))}
                     </div>
